@@ -14,34 +14,23 @@ namespace Test1 {
 		xx::List<int32_t> mapData;
 
 		// 空间索引 / 物理相关
-		xx::Grid2dCircle<SceneItem*, GridCache> gridWalls;
-		xx::Grid2dCircle<SceneItem*, GridCache> gridLavas;
-		xx::Shared<PhysSystem> physMonsters;
-		// 所有墙壁
-		xx::List<xx::Shared<Wall>> walls;
-		// 所有岩浆
-		xx::List<xx::Shared<Lava>> lavas;
-		// 所有怪
-		xx::List<xx::Shared<Monster>> monsters;
-		// 所有弓箭手
-		xx::List<xx::Shared<Archer>> archers;
+		xx::Grid2dCircle<SceneItem*, GridCache> gridTrees;
+		xx::Shared<PhysSystem> physZombies;
+		// 所有树
+		xx::List<xx::Shared<Tree>> trees;
+		// 所有僵尸
+		xx::List<xx::Shared<Zombie>> zombies;
+		// 弓箭塔
+		xx::Shared<Tower> tower;
 		// 所有弓箭手的箭矢
-		xx::List<xx::Shared<ArcherArrow>> archerArrows;
+		xx::List<xx::Shared<TowerArrow>> towerArrows;
 		// 所有怪物爆炸特效
 		xx::List<xx::Shared<Exploder>> exploders;
 		// 所有伤害文字
 		xx::EffectTextManager effectTexts;
 
-		// 所有弓手放置坐标( 对应 mapSize ) 
-		xx::List<XYi> archerPoss;
 		// 所有进怪点坐标
 		xx::List<XYi> enterPoss;
-		// 所有怪出口坐标
-		xx::List<XYi> outletPoss;
-
-		// 所有弓手放置坐标池( 对应 mapPixelSize )
-		xx::List<XY> archerPixelPosPool;
-
 
 		// for draw floorMaskTex, light ...
 		xx::FrameBuffer frameBuffer;
@@ -51,20 +40,8 @@ namespace Test1 {
 		// 地图生成
 		void GenWorld();
 
-		// 弓箭手生成
-		void GenArchers(int32_t n_);
-
 		// 处理建筑重叠( 圆形判断，会挪移 pos 令重叠消失 )
-		void HandleWallsCross(XY& pos_, float radius_);
-
-		// 尝试获取 pos 附近相交( 圆心足够近 )的 lava. 未找到或不够近返回 空
-		Lava* TryGetCrossLava(XY const& pos_, float radius_);
-
-
-
-		// todo
-		//// 尝试获取 pos 附近相交( 圆心足够近 )的 outlet. 未找到或不够近返回 空
-		//Outlet* TryGetCrossOutlet(XY const& pos_, float radius_);
+		void HandleBuildingsCross(XY& pos_, float radius_);
 
 		void Init() override;
 		void Update() override;

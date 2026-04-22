@@ -14,7 +14,7 @@ int32_t main() {
 namespace Global {
 
 	void Game::Init() {
-		title = "archers";
+		title = "tower_defence";
 		windowSize = designSize = cDesignSize;
 		DisableIME();
 	}

@@ -3,10 +3,10 @@
 
 namespace Test1 {
 
-	void Exploder::Init(Monster* tar_) {
+	void Exploder::Init(Zombie* tar_) {
 		typeId = cTypeId;
 		scene = tar_->scene;
-		auto& frame = gg.pics.creature_1_[tar_->frameIndex];
+		auto& frame = tar_->frame;
 		auto frameSize = frame.Size();
 		// 考虑 anchor point 在脚下 而爆炸的 anchor point 在中心 故需要位移
 		pos = tar_->pos + frameSize * frame.anchor - frameSize * 0.5f;

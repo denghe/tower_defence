@@ -3,13 +3,13 @@
 
 namespace Test1 {
 
-	void DotFire::Init(ArcherArrow* caster_) {
+	void DotFire::Init(TowerArrow* caster_) {
 		typeId = cTypeId;
 		scene = caster_->scene;
 		Refresh(caster_);
 	}
 
-	void DotFire::Refresh(ArcherArrow* caster_) {
+	void DotFire::Refresh(TowerArrow* caster_) {
 		deathTime = scene->time + cLifespan;
 		damage += caster_->damage;
 		nextActiveTime = 0;	// update 时立即触发一次
@@ -45,7 +45,7 @@ namespace Test1 {
 		return 0;
 	}
 
-	void DotFire::Make(ArcherArrow* caster_, Global::DotContainer* target_) {
+	void DotFire::Make(TowerArrow* caster_, Global::DotContainer* target_) {
 		// 先检查是否已经有相同 dot 存在，如果存在则 Refresh
 		auto& dots = target_->dots;
 		for (auto& dot : dots) {

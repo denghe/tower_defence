@@ -3,7 +3,7 @@
 
 namespace Test1 {
 
-	struct Archer : SceneProps12DotItem {
+	struct Tower : SceneProps12DotItem {
 		static constexpr int32_t cTypeId{ 7 };
 
 		// 搜索时间间隔( 模拟反应时间 同时省点 cpu )

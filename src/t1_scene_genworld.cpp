@@ -5,21 +5,19 @@ namespace Test1 {
 
 	void Scene::GenWorld() {
 		// 　：怪活动区域
-		// 墙：容器外边框，避免怪物挤出去
-		// 弓：弓箭手布置区
-		// 进：怪从天降区
-		// 出：回头怪离开区
-		// 浆：岩浆，能杀死部分怪 或 导致部分怪回头
+		// 塔：玩家箭塔位置
+		// 进：怪生成区
+		// 树：树木
 		std::u32string_view mapText = UR"(
-墙墙墙墙墙墙墙墙墙墙墙墙墙墙墙墙墙
-墙弓弓浆　　　　　　　　　进进出墙
-墙弓弓浆　　　　　　　　　进进出墙
-墙弓弓浆　　　　　　　　　进进出墙
-墙弓弓浆　　　　　　　　　进进出墙
-墙弓弓浆　　　　　　　　　进进出墙
-墙弓弓浆　　　　　　　　　进进出墙
-墙弓弓浆　　　　　　　　　进进出墙
-墙墙墙墙墙墙墙墙墙墙墙墙墙墙墙墙墙
+树树树树树树树树树树树树树树树树树
+树树树树　　　　　　　　　树树树树
+树树树　　　　　　　　　　　树树树
+进进　　　　　　　　　　　　　进进
+进进　　　　　　塔　　　　　　进进
+进进　　　　　　　　　　　　　进进
+树树树　　　　　　　　　　　树树树
+树树树树　　　　　　　　　树树树树
+树树树树树树树树树树树树树树树树树
 )";
 
 		// 移除首行空换行
@@ -77,11 +75,9 @@ namespace Test1 {
 				x = 0;
 				++y;
 				continue;
-			case U'墙':
+			case U'树':
 			case U'进':
-			case U'出':
-			case U'浆':
-			case U'弓':
+			case U'塔':
 				mapData[y * mapWidth + x] = c; break;
 			}
 			++x;
@@ -90,69 +86,30 @@ namespace Test1 {
 		mapSize = { mapWidth, mapHeight };
 		mapPixelSize = mapSize * cCellPixelSize;
 		cam.Init(gg.scale, 1.f, mapPixelSize / 2);
-		gridWalls.Init(cCellPixelSize, mapHeight, mapWidth);
-		gridLavas.Init(cCellPixelSize, mapHeight, mapWidth);
-		static constexpr auto cellSize = cBossRadius * 2;
-		physMonsters.Emplace()->Init(this
+		gridTrees.Init(cCellPixelSize, mapHeight, mapWidth);
+		static constexpr auto cellSize = cCellPixelSize;
+		physZombies.Emplace()->Init(this
 			, std::ceilf(mapPixelSize.y / cellSize)
 			, std::ceilf(mapPixelSize.x / cellSize)
 			, cellSize, 5000, 15);
 		floorMaskTex.Emplace()->Make(mapPixelSize);
 
-		assert(gridWalls.pixelSize.x >= mapPixelSize.x);
-		assert(gridWalls.pixelSize.y >= mapPixelSize.y);
-		assert(physMonsters->pixelSize.x >= mapPixelSize.x);
-		assert(physMonsters->pixelSize.y >= mapPixelSize.y);
-		sortContainer.Resize<true>((int32_t)physMonsters->pixelSize.y);
+		assert(gridTrees.pixelSize.x >= mapPixelSize.x);
+		assert(gridTrees.pixelSize.y >= mapPixelSize.y);
+		assert(physZombies->pixelSize.x >= mapPixelSize.x);
+		assert(physZombies->pixelSize.y >= mapPixelSize.y);
+		sortContainer.Resize<true>((int32_t)physZombies->pixelSize.y);
 
 		// 逐行扫内容并 各种预生成 / 填充
 		for (int32_t y = 0; y < mapHeight; y++) {
 			for (x = 0; x < mapWidth; x++) {
 				auto i = y * mapWidth + x;
 				switch (mapData[i]) {
-				case U'墙':
-				{
-					// 计算出左上角坐标
-					auto p = XY{ x, y } * cCellPixelSize;
-					// 创建墙壁主体
-					walls.Emplace().Emplace()->Init(this, p + cCellPixelHalfSize);
-					// 判断左边和上边如果也有，在中缝补一个墙增加密度
-					if (x > 0 && mapData[i - 1] == U'墙') {
-						walls.Emplace().Emplace()->Init(this, p + XY{ 0, cCellPixelHalfSize });
-					}
-					if (y > 0 && mapData[i - mapWidth] == U'墙') {
-						walls.Emplace().Emplace()->Init(this, p + XY{ cCellPixelHalfSize, 0 });
-					}
-					// 岩浆插值
-					if (x > 0 && mapData[i - 1] == U'浆') {
-						lavas.Emplace().Emplace()->Init(this, p + XY{ 0, cCellPixelHalfSize });
-					}
-					if (y > 0 && mapData[i - mapWidth] == U'浆') {
-						lavas.Emplace().Emplace()->Init(this, p + XY{ cCellPixelHalfSize, 0 });
-					}
-
+				case U'树':
+					trees.Emplace().Emplace()->Init(this, XY{ x, y } * cCellPixelSize + cCellPixelHalfSize);
 					break;
-				}
-				case U'浆':
-				{
-					// 计算出左上角坐标
-					auto p = XY{ x, y } * cCellPixelSize;
-					// 创建墙壁主体
-					lavas.Emplace().Emplace()->Init(this, p + cCellPixelHalfSize);
-					// 判断左边和上边如果也有，在中缝补一个进增加密度
-					if (x > 0 && mapData[i - 1] == U'浆' || mapData[i - 1] == U'墙') {
-						lavas.Emplace().Emplace()->Init(this, p + XY{ 0, cCellPixelHalfSize });
-					}
-					if (y > 0 && mapData[i - mapWidth] == U'浆' || mapData[i - mapWidth] == U'墙') {
-						lavas.Emplace().Emplace()->Init(this, p + XY{ cCellPixelHalfSize, 0 });
-					}
-					break;
-				}
-				case U'出':
-					outletPoss.Emplace(x, y);
-					break;
-				case U'弓':
-					archerPoss.Emplace(x, y);
+				case U'塔':
+					tower.Emplace()->Init(this, XY{ x, y } * cCellPixelSize + cCellPixelHalfSize);
 					break;
 				case U'进':
 					enterPoss.Emplace(x, y);

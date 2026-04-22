@@ -179,6 +179,73 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
+            <key type="filename">pics/c64_light.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>16,16,32,32</rect>
+                <key>scale9Paddings</key>
+                <rect>16,16,32,32</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">pics/c64_shadow.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>16,8,32,16</rect>
+                <key>scale9Paddings</key>
+                <rect>16,8,32,16</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">pics/cursor_default.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0,0</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>3,5,6,9</rect>
+                <key>scale9Paddings</key>
+                <rect>3,5,6,9</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">pics/explosion_1_1.png</key>
+            <key type="filename">pics/explosion_1_2.png</key>
+            <key type="filename">pics/explosion_1_3.png</key>
+            <key type="filename">pics/explosion_1_4.png</key>
+            <key type="filename">pics/explosion_1_5.png</key>
+            <key type="filename">pics/explosion_1_6.png</key>
+            <key type="filename">pics/explosion_1_7.png</key>
+            <key type="filename">pics/explosion_1_8.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>8,8,16,16</rect>
+                <key>scale9Paddings</key>
+                <rect>8,8,16,16</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">pics/td_arrow.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>

@@ -3,20 +3,10 @@
 
 namespace Test1 {
 
-	void Scene::GenArchers(int32_t n_) {
-		auto& ps = archerPixelPosPool;
-		if (n_ > ps.len) n_ = ps.len;
-		for (int32_t i = 0; i < n_; i++) {
-			auto idx = gg.rnd.Next(ps.len);
-			archers.Emplace().Emplace()->Init(this, ps[idx]);
-			ps.SwapRemoveAt(idx);
-		}
-	}
-
-	void Scene::HandleWallsCross(XY& pos_, float radius_) {
+	void Scene::HandleBuildingsCross(XY& pos_, float radius_) {
 		// 遍历 item 邻居建筑处理碰撞( 直接修改 pos_ 位置将其移到建筑范围外 )
-		using G = decltype(gridWalls);
-		auto& g = gridWalls;
+		using G = decltype(gridTrees);
+		auto& g = gridTrees;
 		auto cri = g.PosToCRIndex(pos_);
 		g.ForeachBy9(cri.y, cri.x, [&](G::Node& node, float range)->void {
 			auto d = pos_ - node.cache.pos;
@@ -31,27 +21,5 @@ namespace Test1 {
 			}
 		});
 	}
-
-	Lava* Scene::TryGetCrossLava(XY const& pos_, float radius_) {
-		// 遍历 主门 判断 pos_ 是否离中心点足够近
-		using G = decltype(gridLavas);
-		auto& g = gridLavas;
-		auto cri = g.PosToCRIndex(pos_);
-		Lava* rtv{};
-		g.ForeachBy9Break(cri.y, cri.x, [&](G::Node& node, float range)->bool {
-			auto d = pos_ - node.cache.pos;
-			auto mag2 = d.x * d.x + d.y * d.y;
-			auto r = node.cache.radius * 0.5f + radius_;
-			auto rr = r * r;
-			// 如果 pos_ 足够接近圆心
-			if (mag2 < rr) {
-				rtv = (Lava*)node.value;
-				return true;
-			}
-			return false;
-		});
-		return rtv;
-	}
-
 
 }

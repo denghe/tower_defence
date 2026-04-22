@@ -11,12 +11,9 @@ namespace Test1 {
 		float elapsedTime;
 	};
 
-	struct Archer;
-	struct ArcherArrow : SceneProps2Item {
+	struct Tower;
+	struct TowerArrow : SceneProps2Item {
 		static constexpr int32_t cTypeId{ 6 };
-
-		// todo: 抛物线效果( 以及更多子弹攻击类型？
-		// todo: 因为是锁定怪物的模式，所以只有当 arrow 落地后才判定，并且判定只是看指针是否未失效
 
 		// 移动速度
 		static constexpr XY cSpeed{ 1000.f };
@@ -31,7 +28,7 @@ namespace Test1 {
 
 
 		// 指向拥有者
-		xx::Weak<Archer> owner;
+		xx::Weak<Tower> owner;
 		// 每帧移动步进值
 		XY inc{};
 		// 死亡时间点 = 创建时时间 + 最大存活时长
@@ -47,7 +44,7 @@ namespace Test1 {
 		xx::List<PierceInfo> pierceInfos;
 
 
-		void Init(Archer* owner_, Monster* tar_);
+		void Init(Tower* owner_, Zombie* tar_);
 		void Update() override;
 		void Draw() override;
 		void DrawLight() override;

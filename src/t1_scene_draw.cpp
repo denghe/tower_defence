@@ -23,35 +23,24 @@ namespace Test1 {
 
 		// 准备内容贴图( 需要被 light 照亮的部分 )
 		auto tex = frameBuffer.Draw(gg.windowSize, true, xx::RGBA8{ 0,0,0,0 }, [&]() {
-			// 绘制地板纹理
-			for (int32_t i = 0; i < mapSize.y; ++i) {
-				for (int32_t j = 0; j < mapSize.x; ++j) {
-					XY p{ j * cCellPixelSize, i * cCellPixelSize };
-					gg.Quad().DrawTinyFrame(gg.pics.c128_floor, cam.ToGLPos(p), { 0,1 }, cam.scale, 0);
-				}
-			}
-
-			// 绘制出怪区
-			for (auto& o : enterPoss) {
-				auto p = o * cCellPixelSize;
-				gg.Quad().DrawTinyFrame(gg.pics.c128_monster_portal, cam.ToGLPos(p), { 0,1 }, cam.scale, 0);
-			}
-
 			// 背景部分绘制
-			for (auto& o : lavas) o->Draw();
-			for (auto& o : walls) o->Draw();
+			auto& bg = gg.pics.td_grass_[0];
+			gg.Quad().DrawFrame(bg, cam.ToGLPos(mapPixelSize * 0.5f), mapPixelSize.y / bg.uvRect.h * cam.scale, 1.f);
+			for (auto& o : trees) o->Draw();
 
 			// 地板污染痕迹绘制
 			gg.Quad().Draw(*floorMaskTex, *floorMaskTex, cam.ToGLPos(mapPixelSize * 0.5f), 0.5f, cam.scale, 0, 1.f, {222,222,222,222});
 
 			// 影子
-			for (auto& o : monsters) o->DrawShadow();
+			for (auto& o : trees) o->DrawShadow();
+			for (auto& o : zombies) o->DrawShadow();
 			// todo: more shadow
 
 			// sort order by y
-			for (auto& o : monsters) SortContainerAdd(o.pointer);
-			for (auto& o : archers) SortContainerAdd(o.pointer);
-			for (auto& o : archerArrows) SortContainerAdd(o.pointer);
+			SortContainerAdd(tower.pointer);
+			for (auto& o : trees) SortContainerAdd(o.pointer);
+			for (auto& o : zombies) SortContainerAdd(o.pointer);
+			for (auto& o : towerArrows) SortContainerAdd(o.pointer);
 			for (auto& o : exploders) SortContainerAdd(o.pointer);
 			SortContainerDraw();
 		});
@@ -65,9 +54,9 @@ namespace Test1 {
 		auto bgColor = xx::RGBA8{ 10,10,10,255 };
 		auto lightTex = frameBuffer.Draw(gg.windowSize * lightTexScale, true, bgColor, [&] {
 			gg.GLBlendFunc({ GL_SRC_COLOR, GL_ONE, GL_FUNC_ADD });
-			for (auto& o : monsters) o->DrawLight();
-			for (auto& o : archers) o->DrawLight();
-			for (auto& o : archerArrows) o->DrawLight();
+			tower->DrawLight();
+			for (auto& o : zombies) o->DrawLight();
+			for (auto& o : towerArrows) o->DrawLight();
 			for (auto& o : exploders) o->DrawLight();
 			// ...
 		});
@@ -80,7 +69,8 @@ namespace Test1 {
 		gg.ShaderEnd();
 
 		// 血条
-		for (auto& o : monsters) o->DrawHPBar();
+		for (auto& o : zombies) o->DrawHPBar();
+		tower->DrawHPBar();
 
 		// 伤害文字
 		effectTexts.Draw();
@@ -89,7 +79,7 @@ namespace Test1 {
 		gg.picsTex->SetParm(GL_NEAREST);
 
 		// 设置顶部信息文字显示内容
-		gg.uiText->SetText(xx::ToString("archers.len = ", archers.len, "  archerArrows.len = ", archerArrows.len, " monsters.len = ", monsters.len));
+		gg.uiText->SetText(xx::ToString("zombies.len = ", zombies.len, "  towerArrows.len = ", towerArrows.len));
 		gg.DrawNode(ui);
 	}
 

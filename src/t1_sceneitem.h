@@ -53,14 +53,11 @@ namespace Test1 {
 	};
 
 	// 一系列预声明就放在这以方便使用
-	struct Wall;
-	struct Lava;
-	struct Outlet;
-	struct Monster;
-	struct Boss;
+	struct Tree;
+	struct Zombie;
 	struct Exploder;
-	struct Archer;
-	struct ArcherArrow;
+	struct Tower;
+	struct TowerArrow;
 	struct PhysSystem;
 	// ...
 

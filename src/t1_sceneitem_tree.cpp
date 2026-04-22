@@ -3,31 +3,31 @@
 
 namespace Test1 {
 
-	void Lava::Init(Scene* scene_, XY pos_) {
+	void Tree::Init(Scene* scene_, XY pos_) {
 		typeId = cTypeId;
 		scene = scene_;
 		pos = pos_;
 		y = pos.y;
-		radius = cWallRadius;
-		scale = radius * 2.f / gg.pics.c128_wall.uvRect.w;
+		radius = cItemRadius;
+		scale = 1.f;
 		radians = {};
 
-		indexAtContainer = scene->lavas.len - 1;
-		assert(scene->lavas[indexAtContainer].pointer == this);
+		indexAtContainer = scene_->trees.len - 1;
+		assert(scene_->trees[indexAtContainer].pointer == this);
 
-		scene->gridLavas.Add(indexAtGrid, this);
+		scene_->gridTrees.Add(indexAtGrid, this);
 	}
 
-	void Lava::Draw() {
-		gg.Quad().DrawFrame(gg.pics.c128_lava, scene->cam.ToGLPos(pos)
-			, scale * scene->cam.scale, radians, 1);
+	void Tree::Draw() {
+		gg.Quad().DrawFrame(gg.pics.td_tree_[0], scene->cam.ToGLPos(pos)
+			, scale * scene->cam.scale, radians);
 	}
 
-	void Lava::Dispose() {
+	void Tree::Dispose() {
 		assert(scene);
 		assert(!disposing);
 		assert(indexAtContainer != -1);
-		auto& container = scene->lavas;
+		auto& container = scene->trees;
 		assert(container[indexAtContainer].pointer == this);
 
 		// 设置标记
@@ -35,7 +35,7 @@ namespace Test1 {
 
 		// 进一步释放资源
 		if (indexAtGrid > -1) {
-			scene->gridLavas.Remove(indexAtGrid, this);
+			scene->gridTrees.Remove(indexAtGrid, this);
 		}
 
 		// 从容器中移除对象( 释放内存 )

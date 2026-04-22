@@ -22,47 +22,22 @@ namespace Test1 {
 	}
 
 	void Scene::FixedUpdate() {
-		UpdateItems(monsters);
-		UpdateItems(archers);
-		UpdateItems(archerArrows);
+		UpdateItems(zombies);
+		UpdateItems(towerArrows);
+		tower->Update();
 		UpdateItems(exploders);
-		physMonsters->Step();
+		physZombies->Step();
 		effectTexts.Update(time);
 
 		auto mp = cam.ToLogicPos(gg.mousePos);
 		if (gg.mouse[GLFW_MOUSE_BUTTON_3](0.1f)) {
 			xx::CoutN(mp);
 		}
-		// 确保鼠标点击的位置是地图内部, 避开外圈墙壁
+		// 确保鼠标停留的位置是地图内部
 		if (mp.x > cCellPixelSize && mp.x < mapPixelSize.x - cCellPixelSize
 			&& mp.y > cCellPixelSize && mp.y < mapPixelSize.y - cCellPixelSize) {
 			XYi cxy = mp * c1_CellPixelSize;
-			if (gg.mouse[GLFW_MOUSE_BUTTON_1]) {
-				// 进一步判断鼠标点击的部位
-				// 弓位
-				if (archerPoss.Find(cxy) != -1) {
-					GenArchers(1);
-				}
-				// 进怪位
-				else if (enterPoss.Find(cxy) != -1) {
-					for (size_t i = 0; i < 5; i++) {
-						monsters.Emplace().Emplace()->Init(this, mp);
-					}
-				}
-			}
-			// BOSS
-			if (gg.mouse[GLFW_MOUSE_BUTTON_2](0.1f)) {
-				// 进一步判断鼠标点击的部位
-				// 弓位
-				if (archerPoss.Find(cxy) != -1) {
-					GenArchers(100);
-				}
-				// 进怪位
-				if (enterPoss.Find(cxy) != -1) {
-					// 创建一个怪物队伍
-					monsters.Emplace().Emplace<MonsterLeader>()->Init(this, mp, 0);
-				}
-			}
+			// todo: 攻击鼠标圈圈内的 zombie
 		}
 	}
 

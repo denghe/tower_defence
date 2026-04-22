@@ -3,7 +3,7 @@
 
 namespace Test1 {
 
-	struct ArcherArrow;
+	struct TowerArrow;
 
 	// 此物由 火箭 命中目标后 创建
 	struct DotFire : Global::Dot {
@@ -21,16 +21,16 @@ namespace Test1 {
 		// 下次激活时间
 		float nextActiveTime{};
 
-		void Init(ArcherArrow* caster_);
+		void Init(TowerArrow* caster_);
 
 		// 针对已存在 dot: 叠加伤害 并 延续时长
-		void Refresh(ArcherArrow* caster_);
+		void Refresh(TowerArrow* caster_);
 
 		// 帧逻辑驱动
 		int32_t Update(Global::SceneItemBase* owner_) override;
 
 		// 合并 / 替换 / 新建 dot 到 target( 可能会从 caster 复制一些参数 )
-		static void Make(ArcherArrow* caster_, Global::DotContainer* target_);
+		static void Make(TowerArrow* caster_, Global::DotContainer* target_);
 	};
 
 	// ... more Dot Types here

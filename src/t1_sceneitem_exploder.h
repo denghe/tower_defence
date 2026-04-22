@@ -3,7 +3,7 @@
 
 namespace Test1 {
 
-	struct Monster;
+	struct Zombie;
 	// 爆炸者( 由炸药桶爆炸时创建，负责爆炸效果和伤害逻辑 )
 	struct Exploder : SceneItem {
 		static constexpr int32_t cTypeId{ 5 };
@@ -15,7 +15,7 @@ namespace Test1 {
 		int32_t _1{};
 		float frameIndex{}, inc{};
 
-		void Init(Monster* tar_);
+		void Init(Zombie* tar_);
 		void Update() override;
 		void Draw() override;
 		void DrawLight() override;

@@ -3,8 +3,12 @@
 #include <xx_frame.h>
 
 struct _pics {
+	xx::Frame c64_light;
+	xx::Frame c64_shadow;
+	xx::Frame cursor_default;
 	xx::Frame td_arrow;
 	xx::Frame td_ring;
+	std::array<xx::Frame, 8> explosion_1_;
 	std::array<xx::Frame, 1> td_grass_;
 	std::array<xx::Frame, 4> td_tower1_;
 	std::array<xx::Frame, 1> td_tree_;

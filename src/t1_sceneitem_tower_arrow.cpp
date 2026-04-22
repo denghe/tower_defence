@@ -3,13 +3,13 @@
 
 namespace Test1 {
 
-	void ArcherArrow::Init(Archer* owner_, Monster* tar_) {
+	void TowerArrow::Init(Tower* owner_, Zombie* tar_) {
 		typeId = cTypeId;
 		scene = owner_->scene;
 		owner = xx::WeakFromThis(owner_);
 
-		indexAtContainer = scene->archerArrows.len - 1;
-		assert(scene->archerArrows[indexAtContainer].pointer == this);
+		indexAtContainer = scene->towerArrows.len - 1;
+		assert(scene->towerArrows[indexAtContainer].pointer == this);
 
 		// 算出每帧的步进
 		auto d = tar_->pos - owner_->pos;
@@ -20,16 +20,16 @@ namespace Test1 {
 
 		pos = owner_->pos;
 		y = pos.y;
-		radius = cPlayerRadius * 0.5f;
-		scale = radius * 2.f / gg.pics.firearrow_[0].uvRect.h;
+		radius = 16.f;
+		scale = 1.f;
 		radians = std::atan2(d.y, d.x);
 
-		// 复制玩家当前数值面板值以便于算伤害
+		// 复制 tower 当前数值面板值以便于算伤害
 		*(Props2*)this = *(Props2*)owner;
 		leftPierceCount = cPierceCount;
 	}
 
-	void ArcherArrow::Update() {
+	void TowerArrow::Update() {
 		// 超时自杀
 		if (scene->time >= deathTime) {
 			Dispose();
@@ -39,12 +39,6 @@ namespace Test1 {
 		// 移动
 		pos += inc;
 		y = pos.y;
-
-		// 步进帧动画
-		frameNumber += cFrameNumberInc;
-		if (frameNumber >= gg.pics.firearrow_.size()) {
-			frameNumber = 0.f;
-		}
 
 		assert(leftPierceCount > 0);
 		// 移除名单里面已经过期 或 对象已失效 的那部分
@@ -56,8 +50,8 @@ namespace Test1 {
 		}
 
 		// 查找子弹位置的怪
-		auto cri = scene->physMonsters->PosToCRIndex(pos);
-		scene->physMonsters->ForeachBy9Break(cri.y, cri.x, [&](PhysSystem::Node& o, float range)->bool {
+		auto cri = scene->physZombies->PosToCRIndex(pos);
+		scene->physZombies->ForeachBy9Break(cri.y, cri.x, [&](PhysSystem::Node& o, float range)->bool {
 			// 开始碰撞判定
 			auto d = o.cache.pos - pos;
 			d.y *= 2.0f;	// 椭圆效果
@@ -76,7 +70,7 @@ namespace Test1 {
 					return false;
 				}
 				// 防止怪物释放内存导致指针失效，先拿 weak ptr
-				auto w = xx::WeakFromThis((Monster*)o.value);
+				auto w = xx::WeakFromThis((Zombie*)o.value);
 				// 伤害目标
 				// 先算攻击力
 				auto [atkVal, isCritical] = PropsCalcAttackValue(gg.rnd, baseDamage);
@@ -116,11 +110,13 @@ namespace Test1 {
 			return false;
 		});
 
+		// todo: 反弹
+
 		bool needDispose{};
 		if (leftPierceCount > 0) {
 			// 查找子弹位置的建筑. 如果有相交，子弹自杀
-			using G = decltype(scene->gridWalls);
-			auto& g = scene->gridWalls;
+			using G = decltype(scene->gridTrees);
+			auto& g = scene->gridTrees;
 			cri = g.PosToCRIndex(pos);
 			needDispose = g.ForeachBy9Break(cri.y, cri.x, [&](G::Node& node, float range)->bool {
 				auto d = pos - node.cache.pos;
@@ -140,21 +136,21 @@ namespace Test1 {
 		}
 	}
 
-	void ArcherArrow::Draw() {
-		gg.Quad().DrawFrame(gg.pics.firearrow_[frameNumber], scene->cam.ToGLPos(pos)
+	void TowerArrow::Draw() {
+		gg.Quad().DrawFrame(gg.pics.td_arrow, scene->cam.ToGLPos(pos)
 			, scale * scene->cam.scale, radians);
 	}
 
-	void ArcherArrow::DrawLight() {
+	void TowerArrow::DrawLight() {
 		gg.Quad().DrawFrame(gg.pics.c64_light, scene->cam.ToGLPos(pos)
 			, (128.f / 64.f) * scene->cam.scale, 0, 0.5f);
 	}
 
-	void ArcherArrow::Dispose() {
+	void TowerArrow::Dispose() {
 		assert(scene);
 		assert(!disposing);
 		assert(indexAtContainer != -1);
-		auto& container = scene->archerArrows;
+		auto& container = scene->towerArrows;
 		assert(container[indexAtContainer].pointer == this);
 
 		// 设置标记

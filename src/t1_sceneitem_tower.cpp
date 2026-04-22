@@ -3,17 +3,14 @@
 
 namespace Test1 {
 
-	void Archer::Init(Scene* scene_, XY pos_) {
+	void Tower::Init(Scene* scene_, XY pos_) {
 		typeId = cTypeId;
 		scene = scene_;
 		pos = pos_;
 		y = pos.y;
-		radius = cPlayerRadius;
-		scale = radius * 2.f / gg.pics.c128_player.uvRect.w;
+		radius = cItemRadius;
+		scale = 1.f;
 		radians = {};
-
-		indexAtContainer = scene->archers.len - 1;
-		assert(scene->archers[indexAtContainer].pointer == this);
 
 		// 初始化数据面板
 		healthMaxDefault = 100.f;
@@ -24,14 +21,14 @@ namespace Test1 {
 		PropsCalc();
 	}
 
-	void Archer::Update() {
+	void Tower::Update() {
 		if (scene->time >= nextShootTime) {
 			// 尝试攻击射程内最近怪
 			auto searchRange = scene->mapPixelSize.x * 0.5f;
 			// 从找到第一个开始判断后续 range 值如果变化就不是同一批了. 在同一批中选最近
 			float minMag2{}, currentBatchRange{};
-			Monster* tar{};
-			auto g = scene->physMonsters.pointer;
+			Zombie* tar{};
+			auto g = scene->physZombies.pointer;
 			auto cri = g->PosToCRIndex(pos);
 			g->ForeachByRange(cri.y, cri.x, searchRange, gg.sgrdd, [&](PhysSystem::Node& node, float range)->bool {
 				auto d = pos - node.cache.pos;
@@ -40,20 +37,20 @@ namespace Test1 {
 				if (!tar) {
 					minMag2 = mag2;
 					currentBatchRange = range;
-					tar = (Monster*)node.value;
+					tar = (Zombie*)node.value;
 				}
 				else {
 					if (currentBatchRange != range) return true;
 					if (mag2 < minMag2) {
 						minMag2 = mag2;
-						tar = (Monster*)node.value;
+						tar = (Zombie*)node.value;
 					}
 				}
 				return false;
 			});
 			if (tar) {
 				nextShootTime = scene->time + cShootInterval;
-				scene->archerArrows.Emplace().Emplace()->Init(this, tar);
+				scene->towerArrows.Emplace().Emplace()->Init(this, tar);
 			}
 			else {
 				nextShootTime = scene->time + cSearchInterval;
@@ -61,31 +58,27 @@ namespace Test1 {
 		}
 	}
 
-	void Archer::Draw() {
-		gg.Quad().DrawFrame(gg.pics.c128_player, scene->cam.ToGLPos(pos)
+	void Tower::Draw() {
+		// todo: 根据血量切破损图
+		gg.Quad().DrawFrame(gg.pics.td_tower1_[0], scene->cam.ToGLPos(pos)
 			, scale * scene->cam.scale, radians);
 	}
 
-	void Archer::DrawLight() {
+	void Tower::DrawLight() {
 		gg.Quad().DrawFrame(gg.pics.c64_light, scene->cam.ToGLPos(pos)
 			, (256.f / 64.f) * scene->cam.scale, 0, 0.5f);
 	}
 
-	void Archer::Dispose() {
+	void Tower::Dispose() {
 		assert(scene);
 		assert(!disposing);
 		assert(indexAtContainer != -1);
-		auto& container = scene->archers;
-		assert(container[indexAtContainer].pointer == this);
 
 		// 设置标记
 		disposing = true;
 
 		// 从容器中移除对象( 释放内存 )
-		auto i = indexAtContainer;
-		container.Back()->indexAtContainer = i;
-		indexAtContainer = -1;
-		container.SwapRemoveAt(i);
+		scene->tower.Reset();
 	}
 
 }
