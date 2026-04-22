@@ -11,13 +11,19 @@ namespace Test1 {
 		cursor->frame = gg.pics.td_ring;
 		GenWorld();
 
-		for (int32_t i = 0; i < 200; i++) {
+		for (int32_t i = 0; i < 100; i++) {
 			auto cxy = gg.rnd.NextElement(spacePoss);
 			XY offset{
 				gg.rnd.Next<float>(cCellPixelSize),
 				gg.rnd.Next<float>(cCellPixelSize)
 			};
-			zombies.Emplace().Emplace<Zombie0>()->Init(this, offset + cxy * cCellPixelSize);
+			if (gg.rnd.Next<bool>()) {
+				zombies.Emplace().Emplace<Zombie0a>()->Init(this, offset + cxy * cCellPixelSize);
+			}
+			else
+			{
+				zombies.Emplace().Emplace<Zombie0b>()->Init(this, offset + cxy * cCellPixelSize);
+			}
 		}
 	}
 

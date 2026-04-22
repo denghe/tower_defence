@@ -9,7 +9,7 @@ namespace Test1 {
 		if (health == healthMax) return;
 		auto percent = (float)health / healthMax;
 		auto& f = gg.pics.td_zombie_[0];
-		XY siz{ 15 * scale, 9 };
+		XY siz{ 100 * scale, 15 };
 		auto p = pos + XY{ -siz.x * 0.5f, (f.uvRect.h * f.anchor.y + 1) * scale };
 		siz *= scene->cam.scale;
 		if (siz.x < 10) siz.x = 10;
@@ -29,11 +29,12 @@ namespace Test1 {
 
 	void Zombie::Draw() {
 		XY s{ scale * scene->cam.scale };
+		s.x *= scaleX;
 		if (flipX) s.x = -s.x;
 		float cp{ 1 };
 		if (scene->time < whiteColorEndTime) cp = 10000.f;
-		gg.Quad().DrawFrame(frame, scene->cam.ToGLPos(pos)
-			, s, radians, cp);
+		XY p{ pos.x, pos.y + offsetY };
+		gg.Quad().DrawFrame(frame, scene->cam.ToGLPos(p), s, radians, cp);
 	}
 
 	void Zombie::Dispose() {
@@ -77,7 +78,7 @@ namespace Test1 {
 	/**********************************************************************/
 	/**********************************************************************/
 
-	void Zombie0::Init(Scene* scene_, XY pos_) {
+	void Zombie0a::Init(Scene* scene_, XY pos_) {
 		// 超出地图边界，硬拉?
 		auto s = scene_->mapPixelSize - cCellPixelSize;
 		if (pos_.x >= s.x) 
@@ -111,11 +112,26 @@ namespace Test1 {
 		PropsCalc();
 	}
 
-	void Zombie0::Update() {
+	void Zombie0a::JumpUpAndScale() {
+		XX_BEGIN(_1);
+		while (true) {
+			for (a1 = -1.f; a1 < 1.f; a1 += cJumpStep) {
+				offsetY = -(1.f - a1 * a1) * cJumpHeight;
+				scaleX = 1.f - (1.f - a1 * a1) * cJumpScaleXRange;
+				XX_YIELD(_1);
+			}
+		}
+		XX_END(_1);
+	}
+
+	void Zombie0a::Update() {
 		// todo: 万一卡怪? 整个长超时自杀?
 
 		// 驱动怪身上挂的 dots. 如果导致已 Dispose 就直接 return ( 指针已野 )
 		if (DotsUpdate(this)) return;
+
+		// 跳. offsetY 和 scaleX 都会发生周期变化
+		JumpUpAndScale();
 
 		/*
 		// 向 tower 移动
@@ -129,8 +145,40 @@ namespace Test1 {
 		}
 		*/
 
-		// todo: idle 动画啥的
 	}
 
+	/**********************************************************************/
+	/**********************************************************************/
 
+	void Zombie0b::Init(Scene* scene_, XY pos_) {
+		Zombie0a::Init(scene_, pos_);
+		typeId = cTypeId;
+	}
+
+	void Zombie0b::Update() {
+		// todo: 万一卡怪? 整个长超时自杀?
+
+		// 驱动怪身上挂的 dots. 如果导致已 Dispose 就直接 return ( 指针已野 )
+		if (DotsUpdate(this)) return;
+
+		// 跳. offsetY 和 scaleX 都会发生周期变化
+		JumpUpAndScale();
+
+		// 选个随机方向移动一段距离
+		static constexpr float cMoveSpeed{ 500.f };
+		XX_BEGIN(_3);
+		while (true) {
+			{
+				auto r = gg.rnd.NextRadians<float>();
+				moveDirection.x = std::cosf(r) * cMoveSpeed;
+				moveDirection.y = std::sinf(r) * cMoveSpeed;
+				numLeftSteps = gg.cFps * cJumpDuration;
+			}
+			for (; numLeftSteps > 0; --numLeftSteps) {
+				scene->physZombies->At(this).accel += moveDirection;
+				XX_YIELD(_3);
+			}
+		}
+		XX_END(_3);
+	}
 }

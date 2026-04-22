@@ -20,6 +20,20 @@ namespace Test1 {
 				pos_ = node.cache.pos + norm * r;
 			}
 		});
+
+		// tower 也算建筑
+		{
+			auto d = pos_ - tower->pos;
+			auto mag2 = d.x * d.x + d.y * d.y;
+			auto r = tower->radius + radius_;
+			auto rr = r * r;
+			// 相交 但没有完全重叠
+			if (mag2 < rr && mag2 > 0.0001f) {
+				auto mag = std::sqrtf(mag2);
+				auto norm = d / mag;
+				pos_ = tower->pos + norm * r;
+			}
+		}
 	}
 
 }
