@@ -25,13 +25,13 @@ namespace Test1 {
 		auto tex = frameBuffer.Draw(gg.windowSize, true, xx::RGBA8{ 0,0,0,0 }, [&]() {
 			// 背景部分绘制
 			auto& bg = gg.pics.td_grass_[0];
-			gg.Quad().DrawFrame(bg, cam.ToGLPos(mapPixelSize * 0.5f), mapPixelSize.y / bg.uvRect.h * cam.scale, 1.f);
-			for (auto& o : trees) o->Draw();
+			gg.Quad().DrawFrame(bg, cam.ToGLPos(mapPixelSize * 0.5f), mapPixelSize.x / bg.uvRect.w * cam.scale);
 
 			// 地板污染痕迹绘制
 			gg.Quad().Draw(*floorMaskTex, *floorMaskTex, cam.ToGLPos(mapPixelSize * 0.5f), 0.5f, cam.scale, 0, 1.f, {222,222,222,222});
 
 			// 影子
+			tower->DrawShadow();
 			for (auto& o : trees) o->DrawShadow();
 			for (auto& o : zombies) o->DrawShadow();
 			// todo: more shadow

@@ -9,15 +9,21 @@ namespace Test1 {
 		// 进：怪生成区
 		// 树：树木
 		std::u32string_view mapText = UR"(
-树树树树树树树树树树树树树树树树树
-树树树树　　　　　　　　　树树树树
-树树树　　　　　　　　　　　树树树
-进进　　　　　　　　　　　　　进进
-进进　　　　　　塔　　　　　　进进
-进进　　　　　　　　　　　　　进进
-树树树　　　　　　　　　　　树树树
-树树树树　　　　　　　　　树树树树
-树树树树树树树树树树树树树树树树树
+树树树树树树树树树树树树树树树树树树树树树树树树树树树树树
+树树树树树树树树树树树树树树树树树树树树树树树树树树树树树
+树树树树树　　　　　　　　　　　　　　　　　　　树树树树树
+树树树树树　　　　　　　　　　　　　　　　　　　树树树树树
+树树树树　　　　　　　　　　　　　　　　　　　　　树树树树
+树树树　　　　　　　　　　　　　　　　　　　　　　　树树树
+树进进　　　　　　　　　　　　　　　　　　　　　　　进进树
+树进进　　　　　　　　　　　塔　　　　　　　　　　　进进树
+树进进　　　　　　　　　　　　　　　　　　　　　　　进进树
+树树树　　　　　　　　　　　　　　　　　　　　　　　树树树
+树树树树　　　　　　　　　　　　　　　　　　　　　树树树树
+树树树树树　　　　　　　　　　　　　　　　　　　树树树树树
+树树树树树　　　　　　　　　　　　　　　　　　　树树树树树
+树树树树树树树树树树树树树树树树树树树树树树树树树树树树树
+树树树树树树树树树树树树树树树树树树树树树树树树树树树树树
 )";
 
 		// 移除首行空换行
@@ -85,7 +91,7 @@ namespace Test1 {
 
 		mapSize = { mapWidth, mapHeight };
 		mapPixelSize = mapSize * cCellPixelSize;
-		cam.Init(gg.scale, 1.f, mapPixelSize / 2);
+		cam.Init(gg.scale, gg.designSize.y / mapPixelSize.y, mapPixelSize / 2);
 		gridTrees.Init(cCellPixelSize, mapHeight, mapWidth);
 		static constexpr auto cellSize = cCellPixelSize;
 		physZombies.Emplace()->Init(this
@@ -114,6 +120,8 @@ namespace Test1 {
 				case U'进':
 					enterPoss.Emplace(x, y);
 					break;
+				default:
+					spacePoss.Emplace(x, y);
 				}
 			}
 		}

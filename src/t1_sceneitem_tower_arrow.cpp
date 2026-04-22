@@ -11,15 +11,16 @@ namespace Test1 {
 		indexAtContainer = scene->towerArrows.len - 1;
 		assert(scene->towerArrows[indexAtContainer].pointer == this);
 
+		pos = owner_->GetShootPos();
+		y = pos.y;
+
 		// 算出每帧的步进
-		auto d = tar_->pos - owner_->pos;
+		auto d = tar_->pos - pos;
 		auto mag2 = d.x * d.x + d.y * d.y;
 		auto _1mag = 1.f / std::sqrtf(mag2);
 		inc = d * _1mag * cSpeed * gg.cDelta;
 		deathTime = scene->time + cMaxLifetime;
 
-		pos = owner_->pos;
-		y = pos.y;
 		radius = 16.f;
 		scale = 1.f;
 		radians = std::atan2(d.y, d.x);

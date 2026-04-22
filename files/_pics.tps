@@ -249,7 +249,7 @@
             <key type="filename">pics/td_arrow.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
-                <point_f>0.46875,0.15625</point_f>
+                <point_f>0.84375,0.46875</point_f>
                 <key>spriteScale</key>
                 <double>1</double>
                 <key>scale9Enabled</key>

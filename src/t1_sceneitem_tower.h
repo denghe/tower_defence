@@ -10,15 +10,19 @@ namespace Test1 {
 		static constexpr float cSearchInterval{ 0.2f };
 
 		// 射击时间间隔
-		static constexpr float cShootInterval{ 2.f };
+		static constexpr float cShootInterval{ 0.2f };
 
 		// 下次射击时间
 		float nextShootTime{};
+
+		// 返回射箭起始坐标( 和 pivot 不等价 )
+		XY GetShootPos() const;
 
 		void Init(Scene* scene_, XY pos_);
 		void Update() override;
 		void Draw() override;
 		void DrawLight() override;
+		void DrawShadow() override;
 		void Dispose() override;
 	};
 

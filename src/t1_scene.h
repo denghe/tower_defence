@@ -31,6 +31,8 @@ namespace Test1 {
 
 		// 所有进怪点坐标
 		xx::List<XYi> enterPoss;
+		// 所有空地坐标( 用来初始放置随机位置的 zombie0 )
+		xx::List<XYi> spacePoss;
 
 		// for draw floorMaskTex, light ...
 		xx::FrameBuffer frameBuffer;

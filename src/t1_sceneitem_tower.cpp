@@ -3,13 +3,17 @@
 
 namespace Test1 {
 
+	XY Tower::GetShootPos() const {
+		return pos + XY{ 0, -100.f };
+	}
+
 	void Tower::Init(Scene* scene_, XY pos_) {
 		typeId = cTypeId;
 		scene = scene_;
 		pos = pos_;
 		y = pos.y;
-		radius = cItemRadius;
-		scale = 1.f;
+		radius = cItemRadius * 2.f;
+		scale = 2.f;
 		radians = {};
 
 		// 初始化数据面板
@@ -66,7 +70,12 @@ namespace Test1 {
 
 	void Tower::DrawLight() {
 		gg.Quad().DrawFrame(gg.pics.c64_light, scene->cam.ToGLPos(pos)
-			, (256.f / 64.f) * scene->cam.scale, 0, 0.5f);
+			, scene->mapPixelSize.y / 32.f * scene->cam.scale, 0, 0.5f);
+	}
+
+	void Tower::DrawShadow() {
+		gg.Quad().DrawFrame(gg.pics.c64_shadow, scene->cam.ToGLPos(pos)
+			, radius / 32.f * scene->cam.scale, 0, 1.f, {77,77,77,77});
 	}
 
 	void Tower::Dispose() {
