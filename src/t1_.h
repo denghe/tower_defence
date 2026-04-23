@@ -3,8 +3,11 @@
 #include "t1_dot.h"
 #include "t1_phys.h"
 #include "t1_scene.h"
-#include "t1_sceneitem_zombie0.h"
 #include "t1_sceneitem_tower.h"
 #include "t1_sceneitem_tower_arrow.h"
 #include "t1_sceneitem_tree.h"
 #include "t1_sceneitem_exploder.h"
+#include "t1_sceneitem_zombie.h"
+#include "t1_sceneitem_zombie0.h"
+#include "t1_sceneitem_zombie1.h"
+// ...

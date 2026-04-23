@@ -17,12 +17,21 @@ namespace Test1 {
 				gg.rnd.Next<float>(cCellPixelSize),
 				gg.rnd.Next<float>(cCellPixelSize)
 			};
-			if (gg.rnd.Next<bool>()) {
+#if 0
+			auto t = 2;
+#else
+			auto t = gg.rnd.Next<int32_t>(3);
+#endif
+			switch (t) {
+			case 0:
 				zombies.Emplace().Emplace<Zombie0a>()->Init(this, offset + cxy * cCellPixelSize);
-			}
-			else
-			{
+				break;
+			case 1:
 				zombies.Emplace().Emplace<Zombie0b>()->Init(this, offset + cxy * cCellPixelSize);
+				break;
+			case 2:
+				zombies.Emplace().Emplace<Zombie1>()->Init(this, offset + cxy * cCellPixelSize);
+				break;
 			}
 		}
 	}
