@@ -11,7 +11,7 @@ namespace Test1 {
 		cursor->frame = gg.pics.td_ring;
 		GenWorld();
 
-		for (int32_t i = 0; i < 100; i++) {
+		for (int32_t i = 0; i < 3500; i++) {
 			auto cxy = gg.rnd.NextElement(spacePoss);
 			XY offset{
 				gg.rnd.Next<float>(cCellPixelSize),
