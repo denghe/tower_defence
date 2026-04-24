@@ -61,7 +61,18 @@ namespace Test1 {
 			XX_YIELD(_2);
 		}
 
-		// todo: 距离判断( 可能正在攻击过程中被挤开了 ) & 伤害 tower
+		// 计算到 tower 的距离( 可能正在攻击过程中被挤开了 )
+		if (scene->tower) {
+			auto tar = scene->tower->pos;
+			auto d = tar - pos;
+			auto mag2 = d.x * d.x + d.y * d.y;
+			auto r = radius + scene->tower->radius + cAttackDistance;
+			if (mag2 < r * r) {
+				// 攻击范围内：伤害 tower
+				auto av = PropsCalcAttackValue(gg.rnd, 1.f);
+				scene->tower->Hurt(av.first);
+			}
+		}
 
 		// 顺时针旋转
 		for (radians = cAttackRadians.to; radians > 0.f; radians += cAttackRestoreRadiansFrameStep) {
@@ -82,21 +93,23 @@ namespace Test1 {
 			Attack();
 		}
 		else {
-			// 算距离
-			auto tar = scene->tower->pos;
-			auto d = tar - pos;
-			auto mag2 = d.x * d.x + d.y * d.y;
-			auto r = radius + scene->tower->radius + cAttackDistance;
-			if (mag2 > r * r) {
-				// 如果距离 tower 太远，向 tower 移动
-				auto norm = d / std::sqrtf(mag2);
-				scene->physZombies->At(this).accel += norm * cMoveSpeed;
-				Idle();
-			}
-			else {
-				// 距离够就开始攻击
-				assert(!_2);
-				Attack();
+			if (scene->tower) {
+				// 算距离
+				auto tar = scene->tower->pos;
+				auto d = tar - pos;
+				auto mag2 = d.x * d.x + d.y * d.y;
+				auto r = radius + scene->tower->radius + cAttackDistance;
+				if (mag2 > r * r) {
+					// 如果距离 tower 太远，向 tower 移动
+					auto norm = d / std::sqrtf(mag2);
+					scene->physZombies->At(this).accel += norm * cMoveSpeed;
+					Idle();
+				}
+				else {
+					// 距离够就开始攻击
+					assert(!_2);
+					Attack();
+				}
 			}
 		}
 	}

@@ -24,7 +24,10 @@ namespace Test1 {
 	void Scene::FixedUpdate() {
 		UpdateItems(zombies);
 		UpdateItems(towerArrows);
-		tower->Update();
+		if(tower) tower->Update();
+		else {
+			// todo: 处理塔被炸死的情况( 现在是直接不更新了 )
+		}
 		UpdateItems(exploders);
 		physZombies->Step();
 		effectTexts.Update(time);

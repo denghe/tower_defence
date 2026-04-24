@@ -17,7 +17,7 @@ namespace Test1 {
 				gg.rnd.Next<float>(cCellPixelSize),
 				gg.rnd.Next<float>(cCellPixelSize)
 			};
-#if 0
+#if 1
 			auto t = 2;
 #else
 			auto t = gg.rnd.Next<int32_t>(3);

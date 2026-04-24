@@ -31,13 +31,13 @@ namespace Test1 {
 			gg.Quad().Draw(*floorMaskTex, *floorMaskTex, cam.ToGLPos(mapPixelSize * 0.5f), 0.5f, cam.scale, 0, 1.f, {222,222,222,222});
 
 			// 影子
-			tower->DrawShadow();
+			if (tower) tower->DrawShadow();
 			for (auto& o : trees) o->DrawShadow();
 			for (auto& o : zombies) o->DrawShadow();
 			// todo: more shadow
 
 			// sort order by y
-			SortContainerAdd(tower.pointer);
+			if (tower) SortContainerAdd(tower.pointer);
 			for (auto& o : trees) SortContainerAdd(o.pointer);
 			for (auto& o : zombies) SortContainerAdd(o.pointer);
 			for (auto& o : towerArrows) SortContainerAdd(o.pointer);
@@ -54,7 +54,7 @@ namespace Test1 {
 		auto bgColor = xx::RGBA8{ 10,10,10,255 };
 		auto lightTex = frameBuffer.Draw(gg.windowSize * lightTexScale, true, bgColor, [&] {
 			gg.GLBlendFunc({ GL_SRC_COLOR, GL_ONE, GL_FUNC_ADD });
-			tower->DrawLight();
+			if (tower) tower->DrawLight();
 			for (auto& o : zombies) o->DrawLight();
 			for (auto& o : towerArrows) o->DrawLight();
 			for (auto& o : exploders) o->DrawLight();
@@ -70,7 +70,7 @@ namespace Test1 {
 
 		// 血条
 		for (auto& o : zombies) o->DrawHPBar();
-		tower->DrawHPBar();
+		if (tower) tower->DrawHPBar();
 
 		// 伤害文字
 		effectTexts.Draw();

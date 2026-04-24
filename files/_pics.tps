@@ -297,7 +297,7 @@
             <key type="filename">pics/td_tower1_4.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
-                <point_f>0.5,0.88</point_f>
+                <point_f>0.5,0.68</point_f>
                 <key>spriteScale</key>
                 <double>1</double>
                 <key>scale9Enabled</key>

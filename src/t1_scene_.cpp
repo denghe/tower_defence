@@ -22,7 +22,7 @@ namespace Test1 {
 		});
 
 		// tower 也算建筑
-		{
+		if(tower) {
 			auto d = pos_ - tower->pos;
 			auto mag2 = d.x * d.x + d.y * d.y;
 			auto r = tower->radius + radius_;

@@ -7,6 +7,20 @@ namespace Test1 {
 		return pos + XY{ 0, -100.f };
 	}
 
+	std::pair<float, int> Tower::Hurt(float attackValue_) {
+		auto r = PropsDoHurt(gg.rnd, attackValue_);
+		if (r.second == 0) {
+			// 变白
+			whiteColorEndTime = scene->time + cWhiteColorDuration;
+		}
+		else if (r.second == 2) {
+			// todo: 特效
+			// 自杀
+			Dispose();
+		}
+		return r;
+	}
+
 	void Tower::Init(Scene* scene_, XY pos_) {
 		typeId = cTypeId;
 		scene = scene_;
@@ -63,9 +77,14 @@ namespace Test1 {
 	}
 
 	void Tower::Draw() {
-		// todo: 根据血量切破损图
-		gg.Quad().DrawFrame(gg.pics.td_tower1_[0], scene->cam.ToGLPos(pos)
-			, scale * scene->cam.scale, radians);
+		// 根据血量切破损图
+		auto v = (1.f - health / healthMax) * gg.pics.td_tower1_.size();
+		auto& f = gg.pics.td_tower1_[v];
+		// 受伤变白的效果
+		float cp{ 1 };
+		if (scene->time < whiteColorEndTime) cp = 10000.f;
+		gg.Quad().DrawFrame(f, scene->cam.ToGLPos(pos)
+			, scale * scene->cam.scale, radians, cp);
 	}
 
 	void Tower::DrawLight() {
@@ -81,7 +100,6 @@ namespace Test1 {
 	void Tower::Dispose() {
 		assert(scene);
 		assert(!disposing);
-		assert(indexAtContainer != -1);
 
 		// 设置标记
 		disposing = true;

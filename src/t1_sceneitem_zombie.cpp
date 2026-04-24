@@ -11,8 +11,8 @@ namespace Test1 {
 		XY siz{ 100 * scale, 15 };
 		auto p = pos + XY{ -siz.x * 0.5f, (f.uvRect.h * f.anchor.y + 1) * scale };
 		siz *= scene->cam.scale;
-		if (siz.x < 10) siz.x = 10;
-		if (siz.y < 4) siz.y = 4;
+		if (siz.x < 20) siz.x = 20;
+		if (siz.y < 6) siz.y = 6;
 		gg.HPBar().Alloc()->Fill(scene->cam.ToGLPos(p), siz, xx::RGBA8_Black, xx::RGBA8_White, xx::RGBA8_Red, percent);
 	}
 
@@ -23,7 +23,7 @@ namespace Test1 {
 
 	void Zombie::DrawShadow() {
 		gg.Quad().DrawFrame(gg.pics.c64_shadow, scene->cam.ToGLPos(pos)
-			, (radius * (1.f / 40.f)) * scene->cam.scale, 0, 1.f, { 77,77,77,77 });
+			, (radius * (1.f / 45.f)) * scene->cam.scale, 0, 1.f, { 99,99,99,99 });
 	}
 
 	void Zombie::Draw() {

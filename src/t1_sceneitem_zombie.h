@@ -16,7 +16,7 @@ namespace Test1 {
 		// for 跳
 		float offsetY{};
 		// for 呼吸
-		float scaleX{}, scaleY{ 1 };
+		float scaleX{ 1 }, scaleY{ 1 };
 
 		void DrawHPBar() override;
 		void DrawLight() override;
