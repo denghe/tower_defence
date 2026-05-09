@@ -11,13 +11,13 @@ namespace Test1 {
 		cursor->frame = gg.pics.td_ring;
 		GenWorld();
 
-		for (int32_t i = 0; i < 3500; i++) {
+		for (int32_t i = 0; i < 3000; i++) {
 			auto cxy = gg.rnd.NextElement(spacePoss);
 			XY offset{
 				gg.rnd.Next<float>(cCellPixelSize),
 				gg.rnd.Next<float>(cCellPixelSize)
 			};
-#if 1
+#if 0
 			auto t = 2;
 #else
 			auto t = gg.rnd.Next<int32_t>(3);
